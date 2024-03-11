@@ -1,20 +1,53 @@
-[
-    {
-        "effect": "Blur",
-        "trigger_type": "Colour",
-        "name": "2344",
-        "sample": {
-            "Default": "Particles"
-        }
-    },
-    {
-        "effect": "Blur",
-        "trigger_type": "Colour",
-        "name": "test",
-        "sample": {
-            "Default": "Particles",
-            "Red": "Fire",
-            "Green": "Blur"
+{
+    "selected_experience": "my experience 1",
+    "experiences": {
+        "my experience 1": {
+            "trigger_type": "Color",
+            "colors": {
+                "default": "Particles",
+                "blue": "Snow",
+                "green": "grass",
+                "red": "fire",
+                "white": "cloud",
+                "yellow": "sun",
+                "black": "night",
+                "grey": "smoke"
+            }
+        },
+        "my experience 2": {
+            "trigger_type": "Time",
+            "time_stamp": "02:05",
+            "effect": "Fire"
+        },
+        "minecraft experience": {
+            "trigger_type": "Sound",
+            "file_path": "/Downloads/test.mp3",
+            "effect": "Blur"
+        },
+        "test": {
+            "trigger_type": "Time",
+            "effect": "Rain",
+            "time_stamp": "21"
+        },
+        "colortest": {
+            "trigger_type": "Color",
+            "effect": "Rain",
+            "colors": {
+                "Default": "Particles",
+                "Red": "Blur"
+            }
+        },
+        "sfdsfsd": {
+            "trigger_type": "Color",
+            "colors": {
+                "Default": "Particles"
+            }
+        },
+        "weqf": {
+            "trigger_type": "Color",
+            "colors": {
+                "Default": "Particles"
+            }
         }
     }
-]
+}

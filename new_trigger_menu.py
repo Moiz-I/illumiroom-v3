@@ -14,7 +14,7 @@ EXPERIENCE_FILE = "experience.json"
 
 class TriggerType(Enum):
     SOUND = 'Sound'
-    COLOR = 'Colour'
+    COLOR = 'Color'
     TIME = 'Time'
 
 class EffectType(Enum):
@@ -34,7 +34,7 @@ class ColorType(Enum):
 class TriggerInputForm(QWidget):
     def __init__(self):
         super().__init__()
-        self.experiences = []
+        self.load_experiences()
         self.initUI()
 
     def initUI(self):
@@ -113,12 +113,17 @@ class TriggerInputForm(QWidget):
         # Effects Group
         self.effects_group = QGroupBox('Effects')
         effect_layout = QVBoxLayout()
-        self.lightning_radio = QRadioButton(EffectType.LIGHTNING.value)
-        self.blur_radio = QRadioButton(EffectType.BLUR.value)
-        self.rain_radio = QRadioButton(EffectType.RAIN.value)
-        effect_layout.addWidget(self.lightning_radio)
-        effect_layout.addWidget(self.blur_radio)
-        effect_layout.addWidget(self.rain_radio)
+        # self.lightning_radio = QRadioButton(EffectType.LIGHTNING.value)
+        # self.blur_radio = QRadioButton(EffectType.BLUR.value)
+        # self.rain_radio = QRadioButton(EffectType.RAIN.value)
+        # effect_layout.addWidget(self.lightning_radio)
+        # effect_layout.addWidget(self.blur_radio)
+        # effect_layout.addWidget(self.rain_radio)
+        self.effect_radios = {}
+        for effect_type in EffectType:
+            radio_button = QRadioButton(effect_type.value)
+            self.effect_radios[effect_type] = radio_button
+            effect_layout.addWidget(radio_button)
         self.effects_group.setLayout(effect_layout)
         right_column_layout.addWidget(self.effects_group)
 
@@ -165,6 +170,13 @@ class TriggerInputForm(QWidget):
     def toggle_trigger_input(self, trigger_type):
         self.mp3_button.setVisible(trigger_type == TriggerType.SOUND.value)
         # self.colour_edit.setVisible(trigger_type == TriggerType.COLOR.value)
+
+        if trigger_type == TriggerType.COLOR.value:
+            for radio_button in self.effect_radios.values():
+                radio_button.setEnabled(False)
+        else:
+            for radio_button in self.effect_radios.values():
+                radio_button.setEnabled(True)
         
         count1 = self.combo_box_layout_1.count()
         count2 = self.combo_box_layout_2.count()
@@ -192,6 +204,21 @@ class TriggerInputForm(QWidget):
         if file_path:
             print(f'Selected file: {file_path}')
 
+    def load_experiences(self):
+        try:
+            with open(EXPERIENCE_FILE, 'r') as file:
+                data = json.load(file)
+                if isinstance(data, dict):
+                    self.experiences = data.get('experiences', {})
+                    self.selected_experience = data.get('selected_experience', '')
+                else:
+                    # Assume data is a list of experiences
+                    self.experiences = {exp['name']: exp for exp in data}
+                    self.selected_experience = ''
+        except (FileNotFoundError, json.JSONDecodeError):
+            self.experiences = {}
+            self.selected_experience = ''
+
     @pyqtSlot()
     def on_submit_form(self):
         trigger_type = TriggerType(self.trigger_combo.currentText())
@@ -206,56 +233,59 @@ class TriggerInputForm(QWidget):
         if not sample_value:
             QMessageBox.warning(self, "Warning", "Please provide a valid trigger sample.")
             return
-        
-        if not effect_type:
+
+        if trigger_type != TriggerType.COLOR and not effect_type:
             QMessageBox.warning(self, "Warning", "Please select an effect.")
             return
 
-        experience = {
-            'effect': effect_type.value,
-            'trigger_type': trigger_type.value,
-            'name': trigger_name,
-            'sample': sample_value
-        }
+        if trigger_type == TriggerType.COLOR:
+            experience = {
+                'trigger_type': trigger_type.value,
+                **sample_value
+            }
+        else:
+            experience = {
+                'trigger_type': trigger_type.value,
+                'effect': effect_type.value,
+                **sample_value
+            }
 
-        self.experiences.append(experience)
+        self.experiences[trigger_name] = experience
         self.save_experiences()
         self.clear_form()
 
     def get_selected_effect(self):
-        if self.lightning_radio.isChecked():
-            return EffectType.LIGHTNING
-        elif self.blur_radio.isChecked():
-            return EffectType.BLUR
-        elif self.rain_radio.isChecked():
-            return EffectType.RAIN
-        else:
-            return None
-
+        for effect_type, radio_button in self.effect_radios.items():
+            if radio_button.isChecked():
+                return effect_type
+        return None
+    
     def get_trigger_sample(self, trigger_type):
         if trigger_type == TriggerType.SOUND:
-            return self.mp3_button.text()
+            return {'file_path': self.mp3_button.text()}
         elif trigger_type == TriggerType.COLOR:
-            colorMapping = {}
+            color_mapping = {}
             count = self.combo_box_layout_1.count()
             for i in range(1, count):
-                colorSelection = self.combo_box_layout_1.itemAt(i).widget()
-                colorEffect = self.combo_box_layout_2.itemAt(i).widget()
-                if colorSelection is not None and colorEffect is not None:
-                    color = colorSelection.currentText()
-                    effect = colorEffect.currentText()
-                    colorMapping[color] = effect
-            return colorMapping
-            
+                color_selection = self.combo_box_layout_1.itemAt(i).widget()
+                color_effect = self.combo_box_layout_2.itemAt(i).widget()
+                if color_selection is not None and color_effect is not None:
+                    color = color_selection.currentText()
+                    effect = color_effect.currentText()
+                    color_mapping[color] = effect
+            return {'colors': color_mapping}
         elif trigger_type == TriggerType.TIME:
-            return self.time_edit.text()
+            return {'time_stamp': self.time_edit.text()}
         else:
-            return None
+            return {}
 
     def save_experiences(self):
         try:
             with open(EXPERIENCE_FILE, 'w') as file:
-                json.dump(self.experiences, file, indent=4)
+                json.dump({
+                    'selected_experience': self.selected_experience,
+                    'experiences': self.experiences
+                }, file, indent=4)
         except IOError as e:
             QMessageBox.critical(self, "Error", f"Failed to save experiences: {e}")
 
@@ -270,9 +300,8 @@ class TriggerInputForm(QWidget):
         #         widget1.deleteLater()
         #         widget2.deleteLater()
         self.time_edit.clear()
-        self.lightning_radio.setChecked(False)
-        self.blur_radio.setChecked(False)
-        self.rain_radio.setChecked(False)
+        for radio_button in self.effect_radios.values():
+            radio_button.setChecked(False)
 
         self.trigger_combo.setCurrentIndex(0)
 

@@ -1,8 +1,20 @@
 [
     {
-        "effect": "Lightning",
-        "trigger_type": "Sound",
-        "name": "sdf",
-        "sample": "Select MP3 File"
+        "effect": "Blur",
+        "trigger_type": "Colour",
+        "name": "2344",
+        "sample": {
+            "Default": "Particles"
+        }
+    },
+    {
+        "effect": "Blur",
+        "trigger_type": "Colour",
+        "name": "test",
+        "sample": {
+            "Default": "Particles",
+            "Red": "Fire",
+            "Green": "Blur"
+        }
     }
 ]

@@ -60,31 +60,33 @@ class TriggerInputForm(QWidget):
         trigger_layout.addWidget(self.trigger_combo)
         left_column_layout.addLayout(trigger_layout)
 
+        # Trigger Settings Group
+        trigger_settings_group = QGroupBox('Trigger Settings')
+        trigger_settings_layout = QVBoxLayout()
+
+
         # Trigger Input
         trigger_input_layout = QHBoxLayout()
         self.mp3_button = QPushButton('Select MP3 File')
         self.time_edit = QLineEdit()
         self.time_edit.setPlaceholderText('Enter time stamp')
         self.time_edit.setValidator(QRegExpValidator(QRegExp(r'\d{2}:\d{2}:\d{2}')))
-        self.colour_edit = QLineEdit()
-        self.colour_edit.setPlaceholderText('Enter colour value')
         trigger_input_layout.addWidget(self.mp3_button)
-        trigger_input_layout.addWidget(self.colour_edit)
         trigger_input_layout.addWidget(self.time_edit)
-        left_column_layout.addLayout(trigger_input_layout)
+        trigger_settings_layout.addLayout(trigger_input_layout)
 
         # Parallel Combo Boxes
         self.combo_box_layout_1 = QVBoxLayout()
         self.combo_box_layout_2 = QVBoxLayout()
         combo_boxes_layout = QHBoxLayout()
 
-        self.combo_box_label_1 = QLabel('Combo Box 1')
+        self.combo_box_label_1 = QLabel('Color input range')
         self.combo_box_1 = QComboBox()
         self.combo_box_1.addItems([color.value for color in ColorType])
         self.combo_box_layout_1.addWidget(self.combo_box_label_1)
         self.combo_box_layout_1.addWidget(self.combo_box_1)
 
-        self.combo_box_label_2 = QLabel('Combo Box 2')
+        self.combo_box_label_2 = QLabel('Effect triggered')
         self.combo_box_2 = QComboBox()
         self.combo_box_2.addItems([colorEffect.value for colorEffect in EffectType])
         self.combo_box_layout_2.addWidget(self.combo_box_label_2)
@@ -92,11 +94,14 @@ class TriggerInputForm(QWidget):
 
         combo_boxes_layout.addLayout(self.combo_box_layout_1)
         combo_boxes_layout.addLayout(self.combo_box_layout_2)
-        left_column_layout.addLayout(combo_boxes_layout)
+        trigger_settings_layout.addLayout(combo_boxes_layout)
 
         # Add new combo box button
-        self.add_combo_box_button = QPushButton('Add Combo Box')
-        left_column_layout.addWidget(self.add_combo_box_button)
+        self.add_combo_box_button = QPushButton('+')
+        trigger_settings_layout.addWidget(self.add_combo_box_button)
+
+        trigger_settings_group.setLayout(trigger_settings_layout)
+        left_column_layout.addWidget(trigger_settings_group)
 
         # Submit Button
         self.submit_button = QPushButton('Save')
@@ -117,10 +122,9 @@ class TriggerInputForm(QWidget):
         self.effects_group.setLayout(effect_layout)
         right_column_layout.addWidget(self.effects_group)
 
-        #add effect button
+        # Add effect button
         self.add_effect_button = QPushButton('Add Effect')
         right_column_layout.addWidget(self.add_effect_button)
-        
 
         # Add layouts to main layout
         self.main_layout.addLayout(left_column_layout)
@@ -160,7 +164,26 @@ class TriggerInputForm(QWidget):
     @pyqtSlot(str)
     def toggle_trigger_input(self, trigger_type):
         self.mp3_button.setVisible(trigger_type == TriggerType.SOUND.value)
-        self.colour_edit.setVisible(trigger_type == TriggerType.COLOR.value)
+        # self.colour_edit.setVisible(trigger_type == TriggerType.COLOR.value)
+        
+        count1 = self.combo_box_layout_1.count()
+        count2 = self.combo_box_layout_2.count()
+        for i in range(count1):
+            widget = self.combo_box_layout_1.itemAt(i).widget()
+            if widget is not None:
+                widget.setVisible(trigger_type == TriggerType.COLOR.value)
+        for i in range(count2):
+            widget = self.combo_box_layout_2.itemAt(i).widget()
+            if widget is not None:
+                widget.setVisible(trigger_type == TriggerType.COLOR.value)
+
+              
+
+        self.combo_box_1.setVisible(trigger_type == TriggerType.COLOR.value)
+        self.combo_box_2.setVisible(trigger_type == TriggerType.COLOR.value)
+        self.combo_box_label_1.setVisible(trigger_type == TriggerType.COLOR.value)
+        self.combo_box_label_2.setVisible(trigger_type == TriggerType.COLOR.value)
+        self.add_combo_box_button.setVisible(trigger_type == TriggerType.COLOR.value)
         self.time_edit.setVisible(trigger_type == TriggerType.TIME.value)
 
     @pyqtSlot()
@@ -213,7 +236,17 @@ class TriggerInputForm(QWidget):
         if trigger_type == TriggerType.SOUND:
             return self.mp3_button.text()
         elif trigger_type == TriggerType.COLOR:
-            return self.colour_edit.text()
+            colorMapping = {}
+            count = self.combo_box_layout_1.count()
+            for i in range(1, count):
+                colorSelection = self.combo_box_layout_1.itemAt(i).widget()
+                colorEffect = self.combo_box_layout_2.itemAt(i).widget()
+                if colorSelection is not None and colorEffect is not None:
+                    color = colorSelection.currentText()
+                    effect = colorEffect.currentText()
+                    colorMapping[color] = effect
+            return colorMapping
+            
         elif trigger_type == TriggerType.TIME:
             return self.time_edit.text()
         else:
@@ -228,12 +261,20 @@ class TriggerInputForm(QWidget):
 
     def clear_form(self):
         self.name_edit.clear()
-        self.mp3_button.setText('')
-        self.colour_edit.clear()
+        # self.mp3_button.setText('')
+        # count = self.combo_box_layout_1.count()
+        # for i in range(2, count):
+        #     widget1 = self.combo_box_layout_1.itemAt(i).widget()
+        #     widget2 = self.combo_box_layout_2.itemAt(i).widget()
+        #     if widget1 is not None and widget2 is not None:
+        #         widget1.deleteLater()
+        #         widget2.deleteLater()
         self.time_edit.clear()
         self.lightning_radio.setChecked(False)
         self.blur_radio.setChecked(False)
         self.rain_radio.setChecked(False)
+
+        self.trigger_combo.setCurrentIndex(0)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

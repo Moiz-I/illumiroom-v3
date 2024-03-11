@@ -1,0 +1,29 @@
+{
+  "selected_experience": "my experience 1",
+  "experiences": {
+      "my experience 1": {
+          "useCommandCentre": false,
+          "trigger_type": "color",
+          "colors": {
+            "default": "particles",
+            "blue": "snow",
+            "green": "grass",
+            "red": "fire",
+            "white": "cloud",
+            "yellow": "sun",
+            "black": "night",
+            "grey": "smoke"
+        }
+      },
+      "minecraft experience": {
+        "useCommandCentre": false,
+        "trigger_type": "sound",
+        "sounds": {
+          "default": "rain",
+          "loud": "thunder",
+          "test.mp3": "snow"
+      }
+    }
+  }
+}
+

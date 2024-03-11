@@ -1,0 +1,8 @@
+[
+    {
+        "effect": "Lightning",
+        "trigger_type": "Sound",
+        "name": "sdf",
+        "sample": "Select MP3 File"
+    }
+]

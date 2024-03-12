@@ -1,0 +1,11 @@
+{
+    "selected_experience": "",
+    "experiences": {
+        "test": {
+            "trigger_type": "Color",
+            "colors": {
+                "Default": "Particles"
+            }
+        }
+    }
+}

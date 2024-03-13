@@ -25,9 +25,10 @@
             "effect": "Blur"
         },
         "test": {
-            "trigger_type": "Time",
-            "effect": "Rain",
-            "time_stamp": "21"
+            "trigger_type": "Color",
+            "colors": {
+                "Default": "Particles"
+            }
         },
         "colortest": {
             "trigger_type": "Color",

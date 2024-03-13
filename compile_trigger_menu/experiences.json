@@ -1,0 +1,10 @@
+{
+    "selected_experience": "",
+    "experiences": {
+        "cool": {
+            "trigger_type": "Time",
+            "effect": "Rain",
+            "time_stamp": "3"
+        }
+    }
+}

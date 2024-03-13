@@ -1,28 +1,34 @@
 {
-  "selected_experience": "my experience 1",
-  "experiences": {
-    "my experience 1": {
-      "trigger_type": "Color",
-      "colors": {
-        "default": "Particles",
-        "blue": "Snow",
-        "green": "grass",
-        "red": "fire",
-        "white": "cloud",
-        "yellow": "sun",
-        "black": "night",
-        "grey": "smoke"
-      }
-    },
-    "my experience 2": {
-      "trigger_type": "Time",
-      "time_stamp": "02:05",
-      "effect": "Fire"
-    },
-    "minecraft experience": {
-      "trigger_type": "Sound",
-      "file_path": "/Downloads/test.mp3",
-      "effect": "Blur"
+    "selected_experience": "my experience 1",
+    "experiences": {
+        "my experience 1": {
+            "trigger_type": "Color",
+            "colors": {
+                "default": "Particles",
+                "blue": "Snow",
+                "green": "grass",
+                "red": "fire",
+                "white": "cloud",
+                "yellow": "sun",
+                "black": "night",
+                "grey": "smoke"
+            }
+        },
+        "my experience 2": {
+            "trigger_type": "Time",
+            "time_stamp": "02:05",
+            "effect": "Fire"
+        },
+        "minecraft experience": {
+            "trigger_type": "Sound",
+            "file_path": "/Downloads/test.mp3",
+            "effect": "Blur"
+        },
+        "test": {
+            "trigger_type": "Color",
+            "colors": {
+                "Default": "Particles"
+            }
+        }
     }
-  }
 }

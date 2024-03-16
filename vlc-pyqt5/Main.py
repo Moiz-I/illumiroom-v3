@@ -22,11 +22,11 @@
 import sys
 import os.path
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QPalette, QColor
+from PyQt5.QtGui import QPalette, QColor, QKeySequence
 import vlc
 from PyQt5.QtWidgets import QMacCocoaViewContainer    
 from PyQt5.QtWidgets import QMainWindow, QWidget, QFrame, QSlider, QHBoxLayout, QPushButton, \
-    QVBoxLayout, QAction, QFileDialog, QApplication, QLabel 
+    QVBoxLayout, QAction, QFileDialog, QApplication, QLabel, QShortcut 
 
 class Player(QMainWindow):
     """A simple Media Player using VLC and Qt
@@ -42,6 +42,7 @@ class Player(QMainWindow):
 
         self.createUI()
         self.isPaused = False
+        self.fullscreen_mode = False
 
     def createUI(self):
         """Set up the user interface, signals & slots
@@ -51,15 +52,15 @@ class Player(QMainWindow):
 
         # In this widget, the video will be drawn
         if sys.platform == "darwin": # for MacOS
-            from PyQt5.QtWidgets import QMacCocoaViewContainer	
+            from PyQt5.QtWidgets import QMacCocoaViewContainer
             self.videoframe = QMacCocoaViewContainer(0)
         else:
             self.videoframe = QFrame()
         self.palette = self.videoframe.palette()
-        self.palette.setColor (QPalette.Window,
-                               QColor(0,0,0))
+        self.palette.setColor(QPalette.Window, QColor(0, 0, 0))
         self.videoframe.setPalette(self.palette)
         self.videoframe.setAutoFillBackground(True)
+        self.videoframe.setMinimumSize(800, 600)  # Set the desired minimum size
 
         self.positionslider = QSlider(Qt.Horizontal, self)
         self.positionslider.setToolTip("Position")
@@ -75,6 +76,14 @@ class Player(QMainWindow):
         self.hbuttonbox.addWidget(self.stopbutton)
         self.stopbutton.clicked.connect(self.Stop)
 
+        # Add a label for the timestamp
+        self.timestamp_label = QLabel("00:00:00")
+
+        self.fullscreenbutton = QPushButton("Fullscreen")
+        self.hbuttonbox.addWidget(self.fullscreenbutton)
+        self.hbuttonbox.addWidget(self.timestamp_label)
+        self.fullscreenbutton.clicked.connect(self.toggleFullscreen)
+
         self.hbuttonbox.addStretch(1)
         self.volumeslider = QSlider(Qt.Horizontal, self)
         self.volumeslider.setMaximum(100)
@@ -83,15 +92,18 @@ class Player(QMainWindow):
         self.hbuttonbox.addWidget(self.volumeslider)
         self.volumeslider.valueChanged.connect(self.setVolume)
 
-        # Add a label for the timestamp
-        self.timestamp_label = QLabel("00:00:00")
-
         self.vboxlayout = QVBoxLayout()
-        self.vboxlayout.addWidget(self.videoframe)
+        self.vboxlayout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
+        self.vboxlayout.setSpacing(0)  # Set spacing to 0
+
+        video_layout = QVBoxLayout()
+        video_layout.addWidget(self.videoframe)
+        video_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
+        video_layout.setSpacing(0)  # Set spacing to 0
+
+        self.vboxlayout.addLayout(video_layout, stretch=1)
         self.vboxlayout.addWidget(self.positionslider)
         self.vboxlayout.addLayout(self.hbuttonbox)
-        self.vboxlayout.addWidget(self.timestamp_label)  
-
 
         self.widget.setLayout(self.vboxlayout)
 
@@ -108,6 +120,45 @@ class Player(QMainWindow):
         self.timer = QTimer(self)
         self.timer.setInterval(200)
         self.timer.timeout.connect(self.updateUI)
+
+        # Create a shortcut for the F key
+        self.fullscreen_shortcut = QShortcut(QKeySequence(Qt.Key_F), self)
+        self.fullscreen_shortcut.activated.connect(self.toggleFullscreen)
+
+        self.positionslider.show()
+        # self.hbuttonbox.show()
+        self.playbutton.show()
+        for widget in self.hbuttonbox.children():
+            widget.show()
+
+        self.timestamp_label.show()
+
+
+    def toggleFullscreen(self):
+        if self.isFullScreen():
+            self.showNormal()
+            self.fullscreen_mode = False
+            self.positionslider.show()
+            self.volumeslider.show()
+            self.fullscreenbutton.show()
+            self.stopbutton.show()
+            # self.hbuttonbox.show()
+            self.playbutton.show()
+            for widget in self.hbuttonbox.children():
+                widget.show()
+            self.timestamp_label.show()
+        else:
+            self.showFullScreen()
+            self.fullscreen_mode = True
+            self.positionslider.hide()
+            self.playbutton.hide()
+            self.volumeslider.hide()
+            self.fullscreenbutton.hide()
+            self.stopbutton.hide()
+            # self.hbuttonbox.hide()
+            for widget in self.hbuttonbox.children():
+                widget.hide()
+            self.timestamp_label.hide()
 
     def PlayPause(self):
         """Toggle play/pause status

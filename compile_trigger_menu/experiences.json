@@ -1,10 +1,100 @@
 {
     "selected_experience": "",
+    "experience_names": [
+        "cool",
+        "tesdtvid",
+        "jjj",
+        "timetest",
+        "ewrer",
+        "sdfdsf",
+        "test78",
+        "sdfdsfdsf test",
+        "dfdsf time",
+        "timefinal",
+        "testduration"
+    ],
     "experiences": {
         "cool": {
             "trigger_type": "Time",
             "effect": "Rain",
             "time_stamp": "3"
+        },
+        "tesdtvid": {
+            "trigger_type": "Time",
+            "effect": "Particles",
+            "video_path": "/Users/moiz/Documents/Important Docs/illumiroom.mp4",
+            "time_stamp": "12"
+        },
+        "jjj": {
+            "trigger_type": "Color",
+            "colors": {
+                "Default": "Particles"
+            }
+        },
+        "timetest": {
+            "trigger_type": "Time",
+            "effect": "Blur",
+            "video_path": "/Users/moiz/Documents/Important Docs/illumiroom.mp4",
+            "time_stamp": "00:00:35"
+        },
+        "ewrer": {
+            "trigger_type": "Time",
+            "effect": "Rain",
+            "video_path": "/Users/moiz/Documents/Important Docs/illumiroom.mp4",
+            "time_stamp": "00:00:00"
+        },
+        "sdfdsf": {
+            "trigger_type": "Color",
+            "colors": {
+                "Default": "Particles"
+            }
+        },
+        "test78": {
+            "trigger_type": "Color",
+            "colors": {
+                "Default": "Particles"
+            }
+        },
+        "sdfdsfdsf test": {
+            "trigger_type": "Time",
+            "effect": "Particles",
+            "video_path": "/Users/moiz/Documents/Important Docs/illumiroom.mp4",
+            "time_stamp": "00:00:35"
+        },
+        "dfdsf time": {
+            "trigger_type": "Time",
+            "effect": "Snow",
+            "video_path": "/Users/moiz/Documents/Important Docs/Open-Illimiroom .mp4",
+            "time_mapping": {
+                "00:00:23": "Particles",
+                "10:00:27": "Blur"
+            }
+        },
+        "timefinal": {
+            "trigger_type": "Time",
+            "effect": "Fire",
+            "video_path": "/Users/moiz/Documents/Important Docs/illumiroom.mp4",
+            "time_mapping": {
+                "00:00:04": "Particles",
+                "00:00:33": "Lightning"
+            }
+        },
+        "testduration": {
+            "trigger_type": "Time",
+            "effect": "Rain",
+            "video_path": "/Users/moiz/Documents/Important Docs/Open-Illimiroom .mp4",
+            "time_mapping": [
+                {
+                    "timestamp": "00:00:04",
+                    "duration": "00:01:00",
+                    "effect": "Particles"
+                },
+                {
+                    "timestamp": "01:00:00",
+                    "duration": "01:00:00",
+                    "effect": "Blur"
+                }
+            ]
         }
     }
 }
